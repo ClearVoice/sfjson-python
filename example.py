@@ -1,4 +1,4 @@
-from superfeedrpy import Superfeedr
+from sfjson import Superfeedr
 import time
 
 def sf_message(event):

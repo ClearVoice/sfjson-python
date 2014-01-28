@@ -8,48 +8,32 @@
 # which you should have received as part of this distribution.
 #
 
-# from ez_setup import use_setuptools
 from distutils.core import setup
-import sys
 
-# if 'cygwin' in sys.platform.lower():
-#     min_version = '0.6c6'
-# else:
-#     min_version = '0.6a9'
-# 
-# try:
-#     use_setuptools(min_version=min_version)
-# except TypeError:
-#     # locally installed ez_setup won't have min_version
-#     use_setuptools()
-# 
-# from setuptools import setup, find_packages, Extension, Feature
-
-VERSION          = '0.1'
-DESCRIPTION      = 'Superfeedrpy'
+VERSION = 'v14.01.27a'
+DESCRIPTION = 'sfjson'
 LONG_DESCRIPTION = """
-Superfeedrpy is a Superfeedr wrapper for SleekXMPP
+sfjson is a Superfeedr JSON wrapper for SleekXMPP
 SleekXMPP is an elegant Python library for XMPP (aka Jabber, Google Talk, etc).
 """
 
-CLASSIFIERS      = [ 'Intended Audience :: Developers',
-                     'License :: OSI Approved :: GPL v2.0',
-                     'Programming Language :: Python',
-                     'Topic :: Software Development :: Libraries :: Python Modules',
-                   ]
+CLASSIFIERS = ['Intended Audience :: Developers',
+               'License :: OSI Approved :: MIT License',
+               'Programming Language :: Python',
+               'Topic :: Software Development :: Libraries :: Python Modules',
+]
 
 setup(
-    name             = "superfeedrpy",
-    version          = VERSION,
-    description      = DESCRIPTION,
-    long_description = LONG_DESCRIPTION,
-    author       = 'Nathanael Fritz',
-    author_email = 'fritzy [at] netflint.net',
-    url          = 'http://code.google.com/p/sleekxmpp',
-    license      = 'GPLv2',
-    platforms    = [ 'any' ],
-    packages     = [ 'superfeedrpy', 
-					],
-    requires     = [ 'sleekxmpp', 'tlslite' ],
-    )
+    name="sfjson",
+    version=VERSION,
+    description=DESCRIPTION,
+    long_description=LONG_DESCRIPTION,
+    author='Jeff Nappi',
+    author_email='jeff [at] iacquire.com',
+    url='https://github.com/iAcquire/sfjson-python',
+    license='MIT',
+    platforms=['any'],
+    packages=['sfjson'],
+    requires=['sleekxmpp', 'tlslite', 'pyasn1', 'pyasn1-modules']
+)
 
