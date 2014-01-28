@@ -34,6 +34,6 @@ setup(
     license='MIT',
     platforms=['any'],
     packages=['sfjson'],
-    requires=['sleekxmpp', 'tlslite', 'pyasn1', 'pyasn1-modules']
+    requires=['sleekxmpp', 'tlslite', 'pyasn1', 'pyasn1-modules', 'python-dateutil']
 )
 

@@ -5,8 +5,7 @@ This is an updated client library for using Superfeedr's JSON XMPP subscriptions
 ## Requirements:
 
 SleekXMPP
-pyasn1
-pyasn1-modules (for certificate verification)
+python-dateutil
 
 ## Installation:
     sudo python setup.py install
