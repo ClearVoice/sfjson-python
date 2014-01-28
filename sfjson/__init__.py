@@ -107,8 +107,6 @@ class Superfeedr(ClientXMPP):
         iq.attrib['type'] = 'set'
 
         return self.send_wait(iq)
-        # iq_id = iq.get('id')
-        # return self.send(iq, "<iq id='%s'/>" % iq_id)
 
     def unsubscribe(self, feed):
         return self.plugin['xep_0060'].unsubscribe('firehoser.superfeedr.com', feed)
