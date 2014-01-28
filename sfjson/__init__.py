@@ -60,7 +60,6 @@ class Superfeedr(sleekxmpp.ClientXMPP):
         print "hello there"
 
         if None not in (status, http, next_fetch, items, entries):
-            event['xml'] = xml
             event['feed'] = items.get('node')
             event['http'] = (http.get('code'), http.text)
             event['next_fetch'] = next_fetch.text
