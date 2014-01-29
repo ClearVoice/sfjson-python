@@ -35,10 +35,13 @@ class SuperfeedrJSONTest(unittest.TestCase):
         assert self.sf_client.success
 
     def test_subscribe(self):
-        assert self.sf_client.subscribe(['http://superfeedr.com/track?include=iacquire'])
+        result = self.sf_client.subscribe(['http://superfeedr.com/track?include=iacquire'])
+
+        assert result[0]['subscription']['feed']['url'] == 'http://superfeedr.com/track?include=iacquire'
 
     def test_unsubscribe(self):
         assert self.sf_client.unsubscribe('http://superfeedr.com/track?include=iacquire')
+        assert self.sf_client.unsubscribe('http://www.iacquire.com/feed/')
 
     def test_message_parse(self):
 

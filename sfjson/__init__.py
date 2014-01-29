@@ -27,7 +27,7 @@ class Superfeedr(ClientXMPP):
         handler = Callback('superfeedr',
                            MatchXPath("{jabber:client}message/"
                                       "{http://jabber.org/protocol/pubsub#event}event"),
-                           self.superfeedr_msg, thread=False)
+                           self.superfeedr_msg)
 
         self.register_handler(handler)
 
@@ -49,37 +49,18 @@ class Superfeedr(ClientXMPP):
 
     def superfeedr_msg(self, stanza):
         xml = stanza.xml
-        event = {'items': []}
 
-        status_query = ('{http://jabber.org/protocol/pubsub#event}event/'
-                        '{http://superfeedr.com/xmpp-pubsub-ext}status')
-        status_child_query = status_query + '/{http://superfeedr.com/xmpp-pubsub-ext}'
-
-        status = xml.find(status_query)
-        http = xml.find(status_child_query + 'http')
-        next_fetch = xml.find(status_child_query + 'next_fetch')
-        last_fetch = xml.find(status_child_query + 'last_fetch')
-        last_parse = xml.find(status_child_query + 'last_parse')
-        period = xml.find(status_child_query + 'period')
-        last_maintenance_at = xml.find(status_child_query + 'last_maintenance_at')
+        event = {'items': [],
+                 'status': self.parse_status(xml, '{http://jabber.org/protocol/pubsub#event}event')}
 
         items = xml.findall('{http://jabber.org/protocol/pubsub#event}event/'
                             '{http://jabber.org/protocol/pubsub#event}items/'
                             '{http://jabber.org/protocol/pubsub}item/'
                             '{http://www.w3.org/2005/Atom}content')
 
-        if None not in (status, http, next_fetch, last_fetch, last_parse, period,
-                        last_maintenance_at, last_fetch):
-
-            event['status'] = dict(lastParse=date_to_epoch(last_parse.text), http=http.text,
-                                   feed=status.get('feed'), lastFetch=date_to_epoch(last_fetch.text),
-                                   nextFetch=date_to_epoch(next_fetch.text),
-                                   lastMaintenanceAt=date_to_epoch(last_maintenance_at.text),
-                                   code=http.get('code'), period=period.text)
-
-            for item in items:
-                if item.get('type') == 'application/json':
-                    event['items'].append(json.loads(item.text))
+        for item in items:
+            if item.get('type') == 'application/json':
+                event['items'].append(json.loads(item.text))
 
         self.event('superfeedr', event)
         if len(event.get('items', [])) > 0:
@@ -106,7 +87,19 @@ class Superfeedr(ClientXMPP):
         iq.attrib['from'] = self.boundjid.bare
         iq.attrib['type'] = 'set'
 
-        return self.send_wait(iq)
+        response = self.send_wait(iq)
+
+        subscriptions = response.findall('{http://jabber.org/protocol/pubsub}pubsub/'
+                                         '{http://jabber.org/protocol/pubsub}subscription')
+        result = False
+        if subscriptions:
+            result = []
+            for subscription in subscriptions:
+                status = self.parse_status(subscription, '')
+                result.append({"subscription": {"status": status,
+                                                "feed": {"url": subscription.get('node'),
+                                                         "title": status['title']}}})
+        return result
 
     def unsubscribe(self, feed):
         return self.plugin['xep_0060'].unsubscribe('firehoser.superfeedr.com', feed)
@@ -165,5 +158,44 @@ class Superfeedr(ClientXMPP):
         self.register_handler(waiter)
 
         return waiter.wait(timeout)
+
+    @staticmethod
+    def parse_status(xml, base_query):
+
+        base_query = base_query + '/' if base_query else ''
+        status_query = base_query + '{http://superfeedr.com/xmpp-pubsub-ext}status'
+        status_child_query = status_query + '/{http://superfeedr.com/xmpp-pubsub-ext}'
+
+        status = xml.find(status_query)
+        http = xml.find(status_child_query + 'http')
+        next_fetch = xml.find(status_child_query + 'next_fetch')
+        last_fetch = xml.find(status_child_query + 'last_fetch')
+        last_parse = xml.find(status_child_query + 'last_parse')
+        period = xml.find(status_child_query + 'period')
+        last_maintenance_at = xml.find(status_child_query + 'last_maintenance_at')
+        title = xml.find(status_child_query + 'title')
+
+        if None not in (status, http, next_fetch, last_fetch, last_parse, period,
+                        last_maintenance_at, last_fetch, title):
+
+            result = dict(lastParse=date_to_epoch(last_parse.text),
+                          lastFetch=date_to_epoch(last_fetch.text),
+                          nextFetch=date_to_epoch(next_fetch.text),
+                          lastMaintenanceAt=date_to_epoch(last_maintenance_at.text),
+                          period=period.text,
+                          title=title.text)
+
+            feed = status.get('feed')
+            if feed is not None:
+                result['feed'] = feed
+
+            if http.text is not None:
+                result['http'] = http.text
+
+            code = http.get('code')
+            if code:
+                result['code'] = http.get('code')
+
+        return result
 
 
