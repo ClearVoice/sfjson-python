@@ -95,7 +95,7 @@ class Superfeedr(ClientXMPP):
         if subscriptions:
             result = []
             for subscription in subscriptions:
-                status = self.parse_status(subscription, '')
+                status = self.parse_status(subscription)
                 result.append({"subscription": {"status": status,
                                                 "feed": {"url": subscription.get('node'),
                                                          "title": status['title']}}})
@@ -160,7 +160,7 @@ class Superfeedr(ClientXMPP):
         return waiter.wait(timeout)
 
     @staticmethod
-    def parse_status(xml, base_query):
+    def parse_status(xml, base_query=None):
 
         base_query = base_query + '/' if base_query else ''
         status_query = base_query + '{http://superfeedr.com/xmpp-pubsub-ext}status'
