@@ -109,14 +109,14 @@ class Superfeedr(ClientXMPP):
         pubsub.attrib['xmlns:superfeedr'] = 'http://superfeedr.com/xmpp-pubsub-ext'
 
         subscriptions = ElementTree.Element('subscriptions')
-        subscriptions.attrib['jid'] = self.fulljid
+        subscriptions.attrib['jid'] = self.boundjid.full
         subscriptions.attrib['superfeedr:page'] = str(page)
 
         pubsub.append(subscriptions)
 
         iq = self.make_iq_set(pubsub)
         iq.attrib['to'] = 'firehoser.superfeedr.com'
-        iq.attrib['from'] = self.fulljid
+        iq.attrib['from'] = self.boundjid.full
         iq.attrib['type'] = 'get'
 
         result = self.send_wait(iq)

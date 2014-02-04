@@ -5,7 +5,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-VERSION = '1.0.0'
+VERSION = '1.0.1'
 DESCRIPTION = 'sfjson'
 LONG_DESCRIPTION = """
 sfjson is a Superfeedr JSON wrapper for SleekXMPP

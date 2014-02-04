@@ -35,9 +35,20 @@ class SuperfeedrJSONTest(unittest.TestCase):
         assert self.sf_client.success
 
     def test_subscribe(self):
-        result = self.sf_client.subscribe(['http://superfeedr.com/track?include=iacquire'])
+        url = 'http://superfeedr.com/track?include=iacquire'
 
-        assert result[0]['subscription']['feed']['url'] == 'http://superfeedr.com/track?include=iacquire'
+        result = self.sf_client.subscribe([url])
+
+        assert result[0]['subscription']['feed']['url'] == url
+
+    def test_list(self):
+        url = 'http://superfeedr.com/track?include=iacquire'
+
+        self.sf_client.subscribe([url])
+
+        feeds = self.sf_client.list()
+
+        assert 'http://superfeedr.com/track?include=iacquire' in feeds
 
     def test_unsubscribe(self):
         assert self.sf_client.unsubscribe('http://superfeedr.com/track?include=iacquire')
@@ -45,12 +56,14 @@ class SuperfeedrJSONTest(unittest.TestCase):
 
     def test_message_parse(self):
 
+        expected_title = 'iPad Air : une grosse autonomie, mais pas la plus grosse'
+
         xml = Element.fromstring(file('sfjson_msg.xml', 'rb').read())
         stanza = StanzaBase(xml=xml)
         result = self.sf_client.superfeedr_msg(stanza)
 
         assert result['status']['feed'] == 'http://superfeedr.com/track?include=apple'
-        assert result['items'][0]['title'] == 'iPad Air : une grosse autonomie, mais pas la plus grosse'
+        assert result['items'][0]['title'] == expected_title
 
 if __name__ == '__main__':
     unittest.main()
