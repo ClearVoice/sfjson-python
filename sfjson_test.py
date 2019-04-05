@@ -8,7 +8,7 @@ import os
 import unittest
 from sfjson import Superfeedr
 from xml.etree import cElementTree as Element
-from sleekxmpp import StanzaBase
+from sleekxmpp.xmlstream import StanzaBase
 
 import logging
 logging.basicConfig(level=logging.INFO,
