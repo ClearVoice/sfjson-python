@@ -4,7 +4,7 @@ from sleekxmpp.xmlstream.matcher.xpath import MatchXPath
 from sleekxmpp.xmlstream.matcher import MatcherId
 from sleekxmpp.xmlstream.handler import Waiter
 from sleekxmpp import ClientXMPP
-from Queue import Queue
+from sleekxmpp.util import Queue
 from sfjson.util import date_to_epoch
 import json
 
