@@ -4,7 +4,11 @@ This is an updated client library for using Superfeedr's JSON XMPP subscriptions
 
 ## Requirements:
 
-SleekXMPP
+At the time of release these specific dependency versions should be used:
+
+SleekXMPP==1.2.5 (1.3.3 seems to have SSL issues)
+pyasn1==0.3.7
+pyasn1-modules==0.1.5
 python-dateutil
 
 ## Installation:
