@@ -58,7 +58,8 @@ class SuperfeedrJSONTest(unittest.TestCase):
 
         expected_title = 'iPad Air : une grosse autonomie, mais pas la plus grosse'
 
-        xml = Element.fromstring(file('sfjson_msg.xml', 'rb').read())
+        with open('sfjson_msg.xml', 'rb') as f:
+            xml = Element.fromstring(f.read())
         stanza = StanzaBase(xml=xml)
         result = self.sf_client.superfeedr_msg(stanza)
 
